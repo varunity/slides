@@ -1,0 +1,14 @@
+name = Slides 
+description = Allows users to create and organize related content in an outline.
+package = Other 
+version = VERSION
+core = 7.x
+files[] = slides.test
+configure = admin/content/slides/settings
+stylesheets[all][] = slides.css
+
+; Information added by drupal.org packaging script on 2011-12-05
+version = "7.10"
+project = "drupal"
+datestamp = "1323125439"
+
