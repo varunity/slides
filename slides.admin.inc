@@ -11,7 +11,7 @@
 function slides_admin_overview() {
   $rows = array();
 
-  $headers = array(t('Book'), t('Operations'));
+  $headers = array(t('Slides'), t('Operations'));
 
   // Add any recognized slidess to the table list.
   foreach (slides_get_slidess() as $slides) {

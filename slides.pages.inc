@@ -21,6 +21,75 @@ function slides_render() {
  * Menu callback; Generates various representation of a slides page and its children.
  *
  * The function delegates the generation of output to helper functions.
+ * The function name is derived by prepending 'slides_reveal_' to the
+ * given output type. So, e.g., a type of 'html' results in a call to
+ * the function slides_reveal_html().
+ *
+ * @param $type
+ *   A string encoding the type of output requested. The following
+ *   types are currently supported in slides module:
+ *
+ *   - html: HTML (printer friendly output)
+ *
+ *   Other types may be supported in contributed modules.
+ * @param $nid
+ *   An integer representing the node id (nid) of the node to reveal
+ * @return
+ *   A string representing the node and its children in the slides hierarchy
+ *   in a format determined by the $type parameter.
+ */
+function slides_reveal($type, $nid) {
+  $type = drupal_strtolower($type);
+
+  $reveal_function = 'slides_reveal_' . $type;
+
+  if (function_exists($reveal_function)) {
+    print call_user_func($reveal_function, $nid);
+  }
+  else {
+    drupal_set_message(t('Unknown reveal format.'));
+    drupal_not_found();
+  }
+}
+
+/**
+ * This function is called by slides_reveal() to generate HTML for reveal.
+ *
+ * The given node is /embedded to its absolute depth in a top level
+ * section/. For example, a child node with depth 2 in the hierarchy
+ * is contained in (otherwise empty) &lt;div&gt; elements
+ * corresponding to depth 0 and depth 1. This is intended to support
+ * WYSIWYG output - e.g., level 3 sections always look like level 3
+ * sections, no matter their depth relative to the node selected to be
+ * revealed as printer-friendly HTML.
+ *
+ * @param $nid
+ *   An integer representing the node id (nid) of the node to reveal.
+ * @return
+ *   A string containing HTML representing the node and its children in
+ *   the slides hierarchy.
+ */
+function slides_reveal_html($nid) {
+  if (user_access('access printer-friendly version')) {
+    $reveal_data = array();
+    $node = node_load($nid);
+    if (isset($node->slides)) {
+      $tree = slides_menu_subtree_data($node->slides);
+      $contents = slides_reveal_traverse($tree, 'slides_node_reveal');
+      return theme('slides_reveal_html', array('title' => $node->title, 'contents' => $contents, 'depth' => $node->slides['depth']));
+    }
+    else {
+      drupal_not_found();
+    }
+  }
+  else {
+    drupal_access_denied();
+  }
+}
+/**
+ * Menu callback; Generates various representation of a slides page and its children.
+ *
+ * The function delegates the generation of output to helper functions.
  * The function name is derived by prepending 'slides_export_' to the
  * given output type. So, e.g., a type of 'html' results in a call to
  * the function slides_export_html().

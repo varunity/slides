@@ -32,9 +32,9 @@ function _slides_install_type_create() {
   // Create an additional node type.
   $slides_node_type = array(
     'type' => 'slides',
-    'name' => t('Book page'),
+    'name' => t('Slide page'),
     'base' => 'node_content',
-    'description' => t('<em>Books</em> have a built-in hierarchical navigation. Use for handslidess or tutorials.'),
+    'description' => t('<em>Slides</em> have a built-in hierarchical navigation. Use for handslidess or tutorials.'),
     'custom' => 1,
     'modified' => 1,
     'locked' => 0,
